@@ -8,6 +8,8 @@
 /**
  * Miscellaneous types.
  */
+type PlainObject = {[name: string]: any};
+
 type NodeKey = string | number;
 type EdgeKey = NodeKey;
 
@@ -17,7 +19,7 @@ type EdgeKeyGeneratorFunction = (
   undirected?: boolean,
   source?: string,
   target?: string,
-  attributes?: object
+  attributes?: PlainObject
 ) => EdgeKey;
 
 type GraphOptions = {
@@ -30,53 +32,53 @@ type GraphOptions = {
 type AdjacencyEntry = [
   string,
   string,
-  object,
-  object,
+  PlainObject,
+  PlainObject,
   string,
-  object
+  PlainObject
 ];
 
-type NodeEntry = [string, object];
-type EdgeEntry = [string, object, string, string, object, object];
+type NodeEntry = [string, PlainObject];
+type EdgeEntry = [string, PlainObject, string, string, PlainObject, PlainObject];
 
 type AdjacencyCallback = (
   source: string,
   target: string,
-  sourceAttributes: object,
-  targetAttributes: object,
+  sourceAttributes: PlainObject,
+  targetAttributes: PlainObject,
   edge: string,
-  edgeAttributes: object
+  edgeAttributes: PlainObject
 ) => void;
 
 type NodeIterationCallback = (
   node: string,
-  attributes: object
+  attributes: PlainObject
 ) => void;
 
 type EdgeIterationCallback = (
   edge: string,
-  attributes: object,
+  attributes: PlainObject,
   source: string,
   target: string,
-  sourceAttributes: object,
-  targetAttributes: object
+  sourceAttributes: PlainObject,
+  targetAttributes: PlainObject
 ) => void;
 
 type SerializedNode = {
   key: string,
-  attributes?: object
+  attributes?: PlainObject
 };
 
 type SerializedEdge = {
   key?: string,
   source: string,
   target: string,
-  attributes?: object,
+  attributes?: PlainObject,
   undirected?: boolean
 };
 
 type SerializedGraph = {
-  attributes?: object,
+  attributes?: PlainObject,
   nodes: Array<SerializedNode>,
   edges: Array<SerializedEdge>
 };
@@ -111,20 +113,20 @@ interface IGraph extends Iterable<AdjacencyEntry> {
   selfLoop(edge: EdgeKey): boolean;
 
   // Mutation methods
-  addNode(node: NodeKey, attributes?: object): string;
-  mergeNode(node: NodeKey, attributes?: object): string;
-  addEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
-  mergeEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
-  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
-  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
-  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
-  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
-  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
-  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
-  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
-  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
-  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
-  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  addNode(node: NodeKey, attributes?: PlainObject): string;
+  mergeNode(node: NodeKey, attributes?: PlainObject): string;
+  addEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  mergeEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
   dropNode(node: NodeKey): void;
   dropEdge(edge: EdgeKey): void;
   clear(): void;
@@ -132,42 +134,42 @@ interface IGraph extends Iterable<AdjacencyEntry> {
 
   // Graph attribute methods
   getAttribute(name: string): any;
-  getAttributes(): object;
+  getAttributes(): PlainObject;
   hasAttribute(name: string): boolean;
   setAttribute(name: string, value: any): this;
   updateAttribute(name: string, updater: (value: any) => any): this;
   removeAttribute(name: string): this;
-  replaceAttributes(attributes: object): this;
-  mergeAttributes(attributes: object): this;
+  replaceAttributes(attributes: PlainObject): this;
+  mergeAttributes(attributes: PlainObject): this;
 
   // Node attribute methods
   getNodeAttribute(node: NodeKey, name: string): any;
-  getNodeAttributes(node: NodeKey): object;
+  getNodeAttributes(node: NodeKey): PlainObject;
   hasNodeAttribute(node: NodeKey, name: string): boolean;
   setNodeAttribute(node: NodeKey, name: string, value: any): this;
   updateNodeAttribute(node: NodeKey, name: string, updater: (value: any) => any): this;
   removeNodeAttribute(node: NodeKey, name: string): this;
-  replaceNodeAttributes(node: NodeKey, attributes: object): this;
-  mergeNodeAttributes(node: NodeKey, attributes: object): this;
+  replaceNodeAttributes(node: NodeKey, attributes: PlainObject): this;
+  mergeNodeAttributes(node: NodeKey, attributes: PlainObject): this;
 
   // Edge attribute methods
   getEdgeAttribute(edge: EdgeKey, name: string): any;
-  getEdgeAttributes(edge: EdgeKey): object;
+  getEdgeAttributes(edge: EdgeKey): PlainObject;
   hasEdgeAttribute(edge: EdgeKey, name: string): boolean;
   setEdgeAttribute(edge: EdgeKey, name: string, value: any): this;
   updateEdgeAttribute(edge: EdgeKey, name: string, updater: (value: any) => any): this;
   removeEdgeAttribute(edge: EdgeKey, name: string): this;
-  replaceEdgeAttributes(edge: EdgeKey, attributes: object): this;
-  mergeEdgeAttributes(edge: EdgeKey, attributes: object): this;
+  replaceEdgeAttributes(edge: EdgeKey, attributes: PlainObject): this;
+  mergeEdgeAttributes(edge: EdgeKey, attributes: PlainObject): this;
 
   getEdgeAttribute(source: NodeKey, target: NodeKey, name: string): any;
-  getEdgeAttributes(source: NodeKey, target: NodeKey): object;
+  getEdgeAttributes(source: NodeKey, target: NodeKey): PlainObject;
   hasEdgeAttribute(source: NodeKey, target: NodeKey, name: string): boolean;
   setEdgeAttribute(source: NodeKey, target: NodeKey, name: string, value: any): this;
   updateEdgeAttribute(source: NodeKey, target: NodeKey, name: string, updater: (value: any) => any): this;
   removeEdgeAttribute(source: NodeKey, target: NodeKey, name: string): this;
-  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: object): this;
-  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: object): this;
+  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: PlainObject): this;
+  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: PlainObject): this;
 
   // Iteration methods
   [Symbol.iterator](): IterableIterator<AdjacencyEntry>;
@@ -192,7 +194,7 @@ interface IGraph extends Iterable<AdjacencyEntry> {
   upgradeToMulti(): this;
 
   // Well-known methods
-  toJSON(): object;
+  toJSON(): SerializedGraph;
   toString(): string;
   inspect(): any;
 }
