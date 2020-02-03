@@ -8,7 +8,7 @@
 /**
  * Miscellaneous types.
  */
-type PlainObject = {[name: string]: any};
+type PlainObject = {[key: string]: any};
 
 type NodeKey = string | number;
 type EdgeKey = NodeKey;
@@ -111,6 +111,13 @@ interface IGraph extends Iterable<AdjacencyEntry> {
   undirected(edge: EdgeKey): boolean;
   directed(edge: EdgeKey): boolean;
   selfLoop(edge: EdgeKey): boolean;
+  neighbors(source: NodeKey, target: NodeKey): boolean;
+  undirectedNeighbors(source: NodeKey, target: NodeKey): boolean;
+  directedNeighbors(source: NodeKey, target: NodeKey): boolean;
+  inNeighbors(source: NodeKey, target: NodeKey): boolean;
+  outNeighbors(source: NodeKey, target: NodeKey): boolean;
+  inboundNeighbors(source: NodeKey, target: NodeKey): boolean;
+  outboundNeighbors(source: NodeKey, target: NodeKey): boolean;
 
   // Mutation methods
   addNode(node: NodeKey, attributes?: PlainObject): string;
@@ -175,9 +182,96 @@ interface IGraph extends Iterable<AdjacencyEntry> {
   [Symbol.iterator](): IterableIterator<AdjacencyEntry>;
   forEach(callback: AdjacencyCallback): void;
   adjacency(): IterableIterator<AdjacencyEntry>;
+
   nodes(): Array<string>;
   forEachNode(callback: NodeIterationCallback): void;
   nodeEntries(): IterableIterator<NodeEntry>;
+
+  edges(): Array<string>;
+  edges(node: NodeKey): Array<string>;
+  edges(source: NodeKey, target: NodeKey): Array<string>;
+  undirectedEdges(): Array<string>;
+  undirectedEdges(node: NodeKey): Array<string>;
+  undirectedEdges(source: NodeKey, target: NodeKey): Array<string>;
+  directedEdges(): Array<string>;
+  directedEdges(node: NodeKey): Array<string>;
+  directedEdges(source: NodeKey, target: NodeKey): Array<string>;
+  inEdges(): Array<string>;
+  inEdges(node: NodeKey): Array<string>;
+  inEdges(source: NodeKey, target: NodeKey): Array<string>;
+  outEdges(): Array<string>;
+  outEdges(node: NodeKey): Array<string>;
+  outEdges(source: NodeKey, target: NodeKey): Array<string>;
+  inboundEdges(): Array<string>;
+  inboundEdges(node: NodeKey): Array<string>;
+  inboundEdges(source: NodeKey, target: NodeKey): Array<string>;
+  outboundEdges(): Array<string>;
+  outboundEdges(node: NodeKey): Array<string>;
+  outboundEdges(source: NodeKey, target: NodeKey): Array<string>;
+  forEachEdge(callback: EdgeIterationCallback): void;
+  forEachEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  forEachUndirectedEdge(callback: EdgeIterationCallback): void;
+  forEachUndirectedEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachUndirectedEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  forEachDirectedEdge(callback: EdgeIterationCallback): void;
+  forEachDirectedEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachDirectedEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  forEachInEdge(callback: EdgeIterationCallback): void;
+  forEachInEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachInEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  forEachOutEdge(callback: EdgeIterationCallback): void;
+  forEachOutEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachOutEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  forEachInboundEdge(callback: EdgeIterationCallback): void;
+  forEachInboundEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachInboundEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  forEachOutboundEdge(callback: EdgeIterationCallback): void;
+  forEachOutboundEdge(node: NodeKey, callback: EdgeIterationCallback): void;
+  forEachOutboundEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
+  edgeEntries(): Iterator<EdgeEntry>;
+  edgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  edgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+  undirectedEdgeEntries(): Iterator<EdgeEntry>;
+  undirectedEdgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  undirectedEdgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+  directedEdgeEntries(): Iterator<EdgeEntry>;
+  directedEdgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  directedEdgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+  inEdgeEntries(): Iterator<EdgeEntry>;
+  inEdgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  inEdgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+  outEdgeEntries(): Iterator<EdgeEntry>;
+  outEdgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  outEdgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+  inboundEdgeEntries(): Iterator<EdgeEntry>;
+  inboundEdgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  inboundEdgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+  outboundEdgeEntries(): Iterator<EdgeEntry>;
+  outboundEdgeEntries(node: NodeKey): Iterator<EdgeEntry>;
+  outboundEdgeEntries(source: NodeKey, target: NodeKey): Iterator<EdgeEntry>;
+
+  neighbors(node: NodeKey): Array<string>;
+  undirectedNeighbors(node: NodeKey): Array<string>;
+  directedNeighbors(node: NodeKey): Array<string>;
+  inNeighbors(node: NodeKey): Array<string>;
+  outNeighbors(node: NodeKey): Array<string>;
+  inboundNeighbors(node: NodeKey): Array<string>;
+  outboundNeighbors(node: NodeKey): Array<string>;
+  forEachNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  forEachUndirectedNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  forEachDirectedNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  forEachInNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  forEachOutNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  forEachInboundNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  forEachOutboundNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
+  neighborEntries(node: NodeKey): Iterator<NodeEntry>;
+  undirectedNeighborEntries(node: NodeKey): Iterator<NodeEntry>;
+  directedNeighborEntries(node: NodeKey): Iterator<NodeEntry>;
+  inNeighborEntries(node: NodeKey): Iterator<NodeEntry>;
+  outNeighborEntries(node: NodeKey): Iterator<NodeEntry>;
+  inboundNeighborEntries(node: NodeKey): Iterator<NodeEntry>;
+  outboundNeighborEntries(node: NodeKey): Iterator<NodeEntry>;
 
   // Serialization methods
   exportNode(node: NodeKey): SerializedNode;
