@@ -16,10 +16,10 @@ type EdgeKey = NodeKey;
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
 type EdgeKeyGeneratorFunction = (
-  undirected?: boolean,
-  source?: string,
-  target?: string,
-  attributes?: PlainObject
+  undirected: boolean,
+  source: string,
+  target: string,
+  attributes: PlainObject
 ) => EdgeKey;
 
 type GraphOptions = {
