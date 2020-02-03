@@ -4,6 +4,7 @@
  *
  * Graphology TypeScript declaration.
  */
+import {EventEmitter} from 'events';
 
 /**
  * Miscellaneous types.
@@ -23,10 +24,10 @@ type EdgeKeyGeneratorFunction = (
 ) => EdgeKey;
 
 type GraphOptions = {
-  allowSelfLoops: boolean
-  edgeKeyGenerator: EdgeKeyGeneratorFunction,
-  multi: boolean,
-  type: GraphType
+  allowSelfLoops?: boolean
+  edgeKeyGenerator?: EdgeKeyGeneratorFunction,
+  multi?: boolean,
+  type?: GraphType
 };
 
 type AdjacencyEntry = [
@@ -86,7 +87,7 @@ type SerializedGraph = {
 /**
  * Main interface.
  */
-interface IGraph extends Iterable<AdjacencyEntry> {
+declare abstract class AbstractGraph extends EventEmitter implements Iterable<AdjacencyEntry> {
 
   // Constructor
   constructor(options?: GraphOptions);
@@ -293,10 +294,8 @@ interface IGraph extends Iterable<AdjacencyEntry> {
   inspect(): any;
 }
 
-type Graph = IGraph;
-
 export {
-  Graph,
+  AbstractGraph,
   NodeKey,
   EdgeKey,
   GraphType,
@@ -313,4 +312,4 @@ export {
   SerializedGraph
 };
 
-export default IGraph;
+export default AbstractGraph;
