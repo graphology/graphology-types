@@ -1,0 +1,33 @@
+{
+  "name": "graphology-types",
+  "version": "1.0.0",
+  "description": "TypeScript declaration for graphology.",
+  "main": "index.d.ts",
+  "scripts": {
+    "test": "echo TODO"
+  },
+  "files": [
+    "index.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphology/graphology-types.git"
+  },
+  "keywords": [
+    "graph",
+    "graphology",
+    "types",
+    "typescript"
+  ],
+  "contributors": [
+    {
+      "name": "Guillaume Plique",
+      "url": "http://github.com/Yomguithereal"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphology/graphology-types/issues"
+  },
+  "homepage": "https://github.com/graphology/graphology-types#readme"
+}
