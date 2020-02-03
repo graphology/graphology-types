@@ -1,100 +1,220 @@
-declare module "graphology" {
-  import { Iterator } from "obliterator";
+/**
+ * Graphology Typings
+ * ===================
+ *
+ * Graphology TypeScript declaration.
+ */
 
-  interface IGraph {
-    constructor(options?: any);
-    hasNode(node: any): boolean;
-    hasDirectedEdge(source: any, target: any): boolean;
-    hasUndirectedEdge(source: any, target: any): boolean;
-    hasEdge(source: any, target: any): boolean;
-    directedEdge(source: any, target: any): any | undefined;
-    undirectedEdge(source: any, target: any): any | undefined;
-    edge(source: any, target: any): any | undefined;
-    inDegree(node: any, selfLoops?: boolean): number;
-    outDegree(node: any, selfLoops?: boolean): number;
-    directedDegree(node: any, selfLoops?: boolean): number;
-    undirectedDegree(node: any, selfLoops?: boolean): number;
-    degree(node: any, selfLoops?: boolean): number;
-    source(edge: any): any;
-    target(edge: any): any;
-    extremities(edge: any): any[];
-    opposite(node, edge: any): any;
-    undirected(edge: any): boolean;
-    directed(edge: any): boolean;
-    selfLoop(edge: any): boolean;
-    addNode(node: any, attributes?: object): any;
-    mergeNode(node: any, attributes?: object): any;
-    dropNode(node: any): void;
-    dropEdge(edge: any): void;
-    clear(): void;
-    clearEdges(): void;
-    getAttribute(name: string): any;
-    getAttributes(): any;
-    hasAttribute(name: string): boolean;
-    setAttribute(name: string, value: any): Graph;
-    updateAttribute(name: string, updater: (value: any) => any): Graph;
-    removeAttribute(name: string): Graph;
-    replaceAttributes(attributes: object): Graph;
-    mergeAttributes(attributes: object): Graph;
-    getNodeAttribute(node: any, name: string);
-    getNodeAttributes(node: any): object;
-    hasNodeAttribute(node: any, name: string): boolean;
-    setNodeAttribute(node: any, name: string, value: any): Graph;
-    updateNodeAttribute(node: any, name: string, updater: (value: any) => any): Graph;
-    removeNodeAttribute(node: any, name: string): Graph;
-    replaceNodeAttributes(node: any, attributes: object): Graph;
-    mergeNodeAttributes(node: any, attributes: object): Graph;
-    forEach(
-      callback: (
-        sourceDataKey: any,
-        targetDatakey: any,
-        sourceDataAttributes: object,
-        targetDataAttributes: object,
-        key: any,
-        edgeDataAttributes: object,
-      ) => any,
-    ): void;
-    adjacency(): Iterator;
-    nodes(): any[];
-    forEachNode(callback: (key: string, attributes: object) => void): void;
-    nodeEntries(): Iterator;
-    exportNode(node: any): any;
-    exportEdge(edge: any): any;
-    export(): { attributes: any; nodes: any[]; edges: any[] };
-    importNode(data: any, merge?: boolean): Graph;
-    importEdge(data: any, merge?: boolean): Graph;
-    import(data: any, merge?: boolean): Graph;
-    emptyCopy(): Graph;
-    copy(): Graph;
-    upgradeToMixed(): Graph;
-    upgradeToMulti(): Graph;
-    clearIndex(): Graph;
-    toJSON(): object;
-    toString(): string;
-    inspect(): any;
-    addEdge(source: any, target: any, attributes?: object): any;
-    mergeEdge(source: any, target: any, attributes?: object): any;
-    addDirectedEdge(source: any, target: any, attributes?: object): any;
-    mergeDirectedEdge(source: any, target: any, attributes?: object): any;
-    addUndirectedEdge(source: any, target: any, attributes?: object): any;
-    mergeUndirectedEdge(source: any, target: any, attributes?: object): any;
-    addEdgeWithKey(edge: any, source: any, target: any, attributes?: object): any;
-    mergeEdgeWithKey(edge: any, source: any, target: any, attributes?: object): any;
-    addDirectedEdgeWithKey(edge: any, source: any, target: any, attributes?: object): any;
-    mergeDirectedEdgeWithKey(edge: any, source: any, target: any, attributes?: object): any;
-    addUndirectedEdgeWithKey(edge: any, source: any, target: any, attributes?: object): any;
-    mergeUndirectedEdgeWithKey(edge: any, source: any, target: any, attributes?: object): any;
-  }
+/**
+ * Miscellaneous types.
+ */
+type NodeKey = string | number;
+type EdgeKey = NodeKey;
 
-  interface Graph extends IGraph {}
-  interface DirectedGraph extends IGraph {}
-  interface UndirectedGraph extends IGraph {}
-  interface MultiDirectedGraph extends IGraph {}
-  interface MultiUndirectedGraph extends IGraph {}
+type GraphType = 'mixed' | 'directed' | 'undirected';
 
-  export class Graph implements Graph {}
-  export class DirectedGraph implements DirectedGraph {}
-  export class UndirectedGraph implements UndirectedGraph {}
-  export class MultiDirectedGraph implements MultiDirectedGraph {}
-  export class MultiUndirectedGraph implements MultiUndirectedGraph {}
+type EdgeKeyGeneratorFunction = (
+  undirected?: boolean,
+  source?: string,
+  target?: string,
+  attributes?: object
+) => EdgeKey;
+
+type GraphOptions = {
+  allowSelfLoops: boolean
+  edgeKeyGenerator: EdgeKeyGeneratorFunction,
+  multi: boolean,
+  type: GraphType
+};
+
+type AdjacencyEntry = [
+  string,
+  string,
+  object,
+  object,
+  string,
+  object
+];
+
+type NodeEntry = [string, object];
+type EdgeEntry = [string, object, string, string, object, object];
+
+type AdjacencyCallback = (
+  source: string,
+  target: string,
+  sourceAttributes: object,
+  targetAttributes: object,
+  edge: string,
+  edgeAttributes: object
+) => void;
+
+type NodeIterationCallback = (
+  node: string,
+  attributes: object
+) => void;
+
+type EdgeIterationCallback = (
+  edge: string,
+  attributes: object,
+  source: string,
+  target: string,
+  sourceAttributes: object,
+  targetAttributes: object
+) => void;
+
+type SerializedNode = {
+  key: string,
+  attributes?: object
+};
+
+type SerializedEdge = {
+  key?: string,
+  source: string,
+  target: string,
+  attributes?: object,
+  undirected?: boolean
+};
+
+type SerializedGraph = {
+  attributes?: object,
+  nodes: Array<SerializedNode>,
+  edges: Array<SerializedEdge>
+};
+
+/**
+ * Main interface.
+ */
+interface IGraph extends Iterable<AdjacencyEntry> {
+
+  // Constructor
+  constructor(options?: GraphOptions);
+
+  // Read methods
+  hasNode(node: NodeKey): boolean;
+  hasDirectedEdge(source: NodeKey, target: NodeKey): boolean;
+  hasUndirectedEdge(source: NodeKey, target: NodeKey): boolean;
+  hasEdge(source: NodeKey, target: NodeKey): boolean;
+  directedEdge(source: NodeKey, target: NodeKey): string | undefined;
+  undirectedEdge(source: NodeKey, target: NodeKey): string | undefined;
+  edge(source: NodeKey, target: NodeKey): string | undefined;
+  inDegree(node: NodeKey, selfLoops?: boolean): number;
+  outDegree(node: NodeKey, selfLoops?: boolean): number;
+  directedDegree(node: NodeKey, selfLoops?: boolean): number;
+  undirectedDegree(node: NodeKey, selfLoops?: boolean): number;
+  degree(node: NodeKey, selfLoops?: boolean): number;
+  source(edge: EdgeKey): string;
+  target(edge: EdgeKey): string;
+  extremities(edge: EdgeKey): [string, string];
+  opposite(node: NodeKey, edge: EdgeKey): string;
+  undirected(edge: EdgeKey): boolean;
+  directed(edge: EdgeKey): boolean;
+  selfLoop(edge: EdgeKey): boolean;
+
+  // Mutation methods
+  addNode(node: NodeKey, attributes?: object): string;
+  mergeNode(node: NodeKey, attributes?: object): string;
+  addEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
+  mergeEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
+  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
+  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
+  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
+  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: object): string;
+  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: object): string;
+  dropNode(node: NodeKey): void;
+  dropEdge(edge: EdgeKey): void;
+  clear(): void;
+  clearEdges(): void;
+
+  // Graph attribute methods
+  getAttribute(name: string): any;
+  getAttributes(): object;
+  hasAttribute(name: string): boolean;
+  setAttribute(name: string, value: any): this;
+  updateAttribute(name: string, updater: (value: any) => any): this;
+  removeAttribute(name: string): this;
+  replaceAttributes(attributes: object): this;
+  mergeAttributes(attributes: object): this;
+
+  // Node attribute methods
+  getNodeAttribute(node: NodeKey, name: string): any;
+  getNodeAttributes(node: NodeKey): object;
+  hasNodeAttribute(node: NodeKey, name: string): boolean;
+  setNodeAttribute(node: NodeKey, name: string, value: any): this;
+  updateNodeAttribute(node: NodeKey, name: string, updater: (value: any) => any): this;
+  removeNodeAttribute(node: NodeKey, name: string): this;
+  replaceNodeAttributes(node: NodeKey, attributes: object): this;
+  mergeNodeAttributes(node: NodeKey, attributes: object): this;
+
+  // Edge attribute methods
+  getEdgeAttribute(edge: EdgeKey, name: string): any;
+  getEdgeAttributes(edge: EdgeKey): object;
+  hasEdgeAttribute(edge: EdgeKey, name: string): boolean;
+  setEdgeAttribute(edge: EdgeKey, name: string, value: any): this;
+  updateEdgeAttribute(edge: EdgeKey, name: string, updater: (value: any) => any): this;
+  removeEdgeAttribute(edge: EdgeKey, name: string): this;
+  replaceEdgeAttributes(edge: EdgeKey, attributes: object): this;
+  mergeEdgeAttributes(edge: EdgeKey, attributes: object): this;
+
+  getEdgeAttribute(source: NodeKey, target: NodeKey, name: string): any;
+  getEdgeAttributes(source: NodeKey, target: NodeKey): object;
+  hasEdgeAttribute(source: NodeKey, target: NodeKey, name: string): boolean;
+  setEdgeAttribute(source: NodeKey, target: NodeKey, name: string, value: any): this;
+  updateEdgeAttribute(source: NodeKey, target: NodeKey, name: string, updater: (value: any) => any): this;
+  removeEdgeAttribute(source: NodeKey, target: NodeKey, name: string): this;
+  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: object): this;
+  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: object): this;
+
+  // Iteration methods
+  [Symbol.iterator](): IterableIterator<AdjacencyEntry>;
+  forEach(callback: AdjacencyCallback): void;
+  adjacency(): IterableIterator<AdjacencyEntry>;
+  nodes(): Array<string>;
+  forEachNode(callback: NodeIterationCallback): void;
+  nodeEntries(): IterableIterator<NodeEntry>;
+
+  // Serialization methods
+  exportNode(node: NodeKey): SerializedNode;
+  exportEdge(edge: EdgeKey): SerializedEdge;
+  export(): SerializedGraph;
+  importNode(data: SerializedNode, merge?: boolean): this;
+  importEdge(data: SerializedEdge, merge?: boolean): this;
+  import(data: SerializedGraph, merge?: boolean): this;
+
+  // Utils
+  emptyCopy(): this;
+  copy(): this;
+  upgradeToMixed(): this;
+  upgradeToMulti(): this;
+
+  // Well-known methods
+  toJSON(): object;
+  toString(): string;
+  inspect(): any;
 }
+
+type Graph = IGraph;
+
+export {
+  Graph,
+  NodeKey,
+  EdgeKey,
+  GraphType,
+  EdgeKeyGeneratorFunction,
+  GraphOptions,
+  AdjacencyEntry,
+  NodeEntry,
+  EdgeEntry,
+  AdjacencyCallback,
+  NodeIterationCallback,
+  EdgeIterationCallback,
+  SerializedNode,
+  SerializedEdge,
+  SerializedGraph
+};
+
+export default IGraph;
