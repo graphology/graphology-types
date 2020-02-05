@@ -318,6 +318,8 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   toJSON(): SerializedGraph;
   toString(): string;
   inspect(): any;
+
+  static from(data: SerializedGraph): AbstractGraph;
 }
 
 export {
