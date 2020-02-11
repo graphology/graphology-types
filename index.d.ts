@@ -35,7 +35,7 @@ declare class EventEmitter {
 /**
  * Miscellaneous types.
  */
-type PlainObject = {[key: string]: any};
+type Attributes = {[key: string]: any};
 
 type NodeKey = string | number;
 type EdgeKey = NodeKey;
@@ -46,7 +46,7 @@ type EdgeKeyGeneratorFunction = (
   undirected: boolean,
   source: string,
   target: string,
-  attributes: PlainObject
+  attributes: Attributes
 ) => EdgeKey;
 
 type GraphOptions = {
@@ -59,53 +59,53 @@ type GraphOptions = {
 type AdjacencyEntry = [
   string,
   string,
-  PlainObject,
-  PlainObject,
+  Attributes,
+  Attributes,
   string,
-  PlainObject
+  Attributes
 ];
 
-type NodeEntry = [string, PlainObject];
-type EdgeEntry = [string, PlainObject, string, string, PlainObject, PlainObject];
+type NodeEntry = [string, Attributes];
+type EdgeEntry = [string, Attributes, string, string, Attributes, Attributes];
 
 type AdjacencyCallback = (
   source: string,
   target: string,
-  sourceAttributes: PlainObject,
-  targetAttributes: PlainObject,
+  sourceAttributes: Attributes,
+  targetAttributes: Attributes,
   edge: string,
-  edgeAttributes: PlainObject
+  edgeAttributes: Attributes
 ) => void;
 
 type NodeIterationCallback = (
   node: string,
-  attributes: PlainObject
+  attributes: Attributes
 ) => void;
 
 type EdgeIterationCallback = (
   edge: string,
-  attributes: PlainObject,
+  attributes: Attributes,
   source: string,
   target: string,
-  sourceAttributes: PlainObject,
-  targetAttributes: PlainObject
+  sourceAttributes: Attributes,
+  targetAttributes: Attributes
 ) => void;
 
 type SerializedNode = {
   key: string,
-  attributes?: PlainObject
+  attributes?: Attributes
 };
 
 type SerializedEdge = {
   key?: string,
   source: string,
   target: string,
-  attributes?: PlainObject,
+  attributes?: Attributes,
   undirected?: boolean
 };
 
 type SerializedGraph = {
-  attributes?: PlainObject,
+  attributes?: Attributes,
   nodes: Array<SerializedNode>,
   edges: Array<SerializedEdge>
 };
@@ -147,20 +147,20 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   outboundNeighbors(source: NodeKey, target: NodeKey): boolean;
 
   // Mutation methods
-  addNode(node: NodeKey, attributes?: PlainObject): string;
-  mergeNode(node: NodeKey, attributes?: PlainObject): string;
-  addEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  mergeEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
-  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: PlainObject): string;
+  addNode(node: NodeKey, attributes?: Attributes): string;
+  mergeNode(node: NodeKey, attributes?: Attributes): string;
+  addEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  mergeEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
   dropNode(node: NodeKey): void;
   dropEdge(edge: EdgeKey): void;
   clear(): void;
@@ -168,42 +168,42 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
 
   // Graph attribute methods
   getAttribute(name: string): any;
-  getAttributes(): PlainObject;
+  getAttributes(): Attributes;
   hasAttribute(name: string): boolean;
   setAttribute(name: string, value: any): this;
   updateAttribute(name: string, updater: (value: any) => any): this;
   removeAttribute(name: string): this;
-  replaceAttributes(attributes: PlainObject): this;
-  mergeAttributes(attributes: PlainObject): this;
+  replaceAttributes(attributes: Attributes): this;
+  mergeAttributes(attributes: Attributes): this;
 
   // Node attribute methods
   getNodeAttribute(node: NodeKey, name: string): any;
-  getNodeAttributes(node: NodeKey): PlainObject;
+  getNodeAttributes(node: NodeKey): Attributes;
   hasNodeAttribute(node: NodeKey, name: string): boolean;
   setNodeAttribute(node: NodeKey, name: string, value: any): this;
   updateNodeAttribute(node: NodeKey, name: string, updater: (value: any) => any): this;
   removeNodeAttribute(node: NodeKey, name: string): this;
-  replaceNodeAttributes(node: NodeKey, attributes: PlainObject): this;
-  mergeNodeAttributes(node: NodeKey, attributes: PlainObject): this;
+  replaceNodeAttributes(node: NodeKey, attributes: Attributes): this;
+  mergeNodeAttributes(node: NodeKey, attributes: Attributes): this;
 
   // Edge attribute methods
   getEdgeAttribute(edge: EdgeKey, name: string): any;
-  getEdgeAttributes(edge: EdgeKey): PlainObject;
+  getEdgeAttributes(edge: EdgeKey): Attributes;
   hasEdgeAttribute(edge: EdgeKey, name: string): boolean;
   setEdgeAttribute(edge: EdgeKey, name: string, value: any): this;
   updateEdgeAttribute(edge: EdgeKey, name: string, updater: (value: any) => any): this;
   removeEdgeAttribute(edge: EdgeKey, name: string): this;
-  replaceEdgeAttributes(edge: EdgeKey, attributes: PlainObject): this;
-  mergeEdgeAttributes(edge: EdgeKey, attributes: PlainObject): this;
+  replaceEdgeAttributes(edge: EdgeKey, attributes: Attributes): this;
+  mergeEdgeAttributes(edge: EdgeKey, attributes: Attributes): this;
 
   getEdgeAttribute(source: NodeKey, target: NodeKey, name: string): any;
-  getEdgeAttributes(source: NodeKey, target: NodeKey): PlainObject;
+  getEdgeAttributes(source: NodeKey, target: NodeKey): Attributes;
   hasEdgeAttribute(source: NodeKey, target: NodeKey, name: string): boolean;
   setEdgeAttribute(source: NodeKey, target: NodeKey, name: string, value: any): this;
   updateEdgeAttribute(source: NodeKey, target: NodeKey, name: string, updater: (value: any) => any): this;
   removeEdgeAttribute(source: NodeKey, target: NodeKey, name: string): this;
-  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: PlainObject): this;
-  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: PlainObject): this;
+  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: Attributes): this;
+  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: Attributes): this;
 
   // Iteration methods
   [Symbol.iterator](): IterableIterator<AdjacencyEntry>;
@@ -324,6 +324,7 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
 
 export {
   AbstractGraph,
+  Attributes,
   NodeKey,
   EdgeKey,
   GraphType,
