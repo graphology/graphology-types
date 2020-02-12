@@ -162,7 +162,7 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
   mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
   dropNode(node: NodeKey): void;
-  dropEdge(edge: EdgeKey): void;
+  dropEdge(source: NodeKey, target: NodeKey): void;
   clear(): void;
   clearEdges(): void;
 
