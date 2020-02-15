@@ -118,6 +118,15 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   // Constructor
   constructor(options?: GraphOptions);
 
+  // Members
+  order: number;
+  size: number;
+  directedSize: number;
+  undirectedSize: number;
+  type: GraphType;
+  multi: boolean;
+  allowSelfLoops: boolean;
+
   // Read methods
   hasNode(node: NodeKey): boolean;
   hasDirectedEdge(source: NodeKey, target: NodeKey): boolean;
