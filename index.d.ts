@@ -317,6 +317,7 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   importNode(data: SerializedNode, merge?: boolean): this;
   importEdge(data: SerializedEdge, merge?: boolean): this;
   import(data: SerializedGraph, merge?: boolean): this;
+  import(graph: AbstractGraph, merge?: boolean): this;
 
   // Utils
   emptyCopy(): this;
@@ -330,6 +331,7 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   inspect(): any;
 
   static from(data: SerializedGraph): AbstractGraph;
+  static from(graph: AbstractGraph): AbstractGraph;
 }
 
 export {
