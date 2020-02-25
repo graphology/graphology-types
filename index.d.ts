@@ -334,6 +334,12 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   static from(graph: AbstractGraph): AbstractGraph;
 }
 
+interface IGraphConstructor {
+  new(options?: GraphOptions): AbstractGraph;
+}
+
+type GraphConstructor = IGraphConstructor;
+
 export {
   AbstractGraph,
   Attributes,
@@ -350,7 +356,8 @@ export {
   EdgeIterationCallback,
   SerializedNode,
   SerializedEdge,
-  SerializedGraph
+  SerializedGraph,
+  GraphConstructor
 };
 
 export default AbstractGraph;
