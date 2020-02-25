@@ -320,6 +320,7 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   import(graph: AbstractGraph, merge?: boolean): this;
 
   // Utils
+  nullCopy(): this;
   emptyCopy(): this;
   copy(): this;
   upgradeToMixed(): this;
