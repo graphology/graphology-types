@@ -42,81 +42,81 @@ type EdgeKey = NodeKey;
 
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
-type EdgeKeyGeneratorFunction = (
+type EdgeKeyGeneratorFunction<EdgeAttributes extends Attributes = Attributes> = (
   undirected: boolean,
   source: string,
   target: string,
-  attributes: Attributes
+  attributes: EdgeAttributes
 ) => EdgeKey;
 
-type GraphOptions = {
+type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
   allowSelfLoops?: boolean
-  edgeKeyGenerator?: EdgeKeyGeneratorFunction,
+  edgeKeyGenerator?: EdgeKeyGeneratorFunction<EdgeAttributes>,
   multi?: boolean,
   type?: GraphType
 };
 
-type AdjacencyEntry = [
+type AdjacencyEntry<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes> = [
   string,
   string,
-  Attributes,
-  Attributes,
+  NodeAttributes,
+  NodeAttributes,
   string,
-  Attributes
+  EdgeAttributes
 ];
 
-type NodeEntry = [string, Attributes];
-type EdgeEntry = [string, Attributes, string, string, Attributes, Attributes];
+type NodeEntry<NodeAttributes extends Attributes = Attributes> = [string, NodeAttributes];
+type EdgeEntry<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes> = [string, EdgeAttributes, string, string, NodeAttributes, NodeAttributes];
 
-type AdjacencyCallback = (
+type AdjacencyCallback<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes> = (
   source: string,
   target: string,
-  sourceAttributes: Attributes,
-  targetAttributes: Attributes,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
   edge: string,
-  edgeAttributes: Attributes
+  edgeAttributes: EdgeAttributes
 ) => void;
 
-type NodeIterationCallback = (
+type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
   node: string,
-  attributes: Attributes
+  attributes: NodeAttributes
 ) => void;
 
-type EdgeIterationCallback = (
+type EdgeIterationCallback<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes> = (
   edge: string,
-  attributes: Attributes,
+  attributes: EdgeAttributes,
   source: string,
   target: string,
-  sourceAttributes: Attributes,
-  targetAttributes: Attributes
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes
 ) => void;
 
-type SerializedNode = {
+type SerializedNode<NodeAttributes extends Attributes = Attributes> = {
   key: string,
-  attributes?: Attributes
+  attributes?: NodeAttributes
 };
 
-type SerializedEdge = {
+type SerializedEdge<EdgeAttributes extends Attributes = Attributes> = {
   key?: string,
   source: string,
   target: string,
-  attributes?: Attributes,
+  attributes?: EdgeAttributes,
   undirected?: boolean
 };
 
-type SerializedGraph = {
-  attributes?: Attributes,
-  nodes: Array<SerializedNode>,
-  edges: Array<SerializedEdge>
+type SerializedGraph<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> = {
+  attributes?: GraphAttributes,
+  nodes: Array<SerializedNode<NodeAttributes>>,
+  edges: Array<SerializedEdge<EdgeAttributes>>
 };
 
 /**
  * Main interface.
  */
-declare abstract class AbstractGraph extends EventEmitter implements Iterable<AdjacencyEntry> {
+declare abstract class AbstractGraph<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> extends EventEmitter implements Iterable<AdjacencyEntry<NodeAttributes, EdgeAttributes>> {
 
   // Constructor
-  constructor(options?: GraphOptions);
+  constructor(options?: GraphOptions<EdgeAttributes>);
 
   // Members
   order: number;
@@ -156,20 +156,20 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   outboundNeighbors(source: NodeKey, target: NodeKey): boolean;
 
   // Mutation methods
-  addNode(node: NodeKey, attributes?: Attributes): string;
-  mergeNode(node: NodeKey, attributes?: Attributes): string;
-  addEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  mergeEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
-  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: Attributes): string;
+  addNode(node: NodeKey, attributes?: NodeAttributes): string;
+  mergeNode(node: NodeKey, attributes?: NodeAttributes): string;
+  addEdge(source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  mergeEdge(source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  addDirectedEdge(source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  mergeDirectedEdge(source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  addUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  mergeUndirectedEdge(source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  addEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  mergeEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  addDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  mergeDirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  addUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
+  mergeUndirectedEdgeWithKey(edge: EdgeKey, source: NodeKey, target: NodeKey, attributes?: EdgeAttributes): string;
   dropNode(node: NodeKey): void;
   dropEdge(edge: EdgeKey): void;
   dropEdge(source: NodeKey, target: NodeKey): void;
@@ -178,51 +178,51 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
 
   // Graph attribute methods
   getAttribute(name: string): any;
-  getAttributes(): Attributes;
+  getAttributes(): GraphAttributes;
   hasAttribute(name: string): boolean;
   setAttribute(name: string, value: any): this;
   updateAttribute(name: string, updater: (value: any) => any): this;
   removeAttribute(name: string): this;
-  replaceAttributes(attributes: Attributes): this;
-  mergeAttributes(attributes: Attributes): this;
+  replaceAttributes(attributes: GraphAttributes): this;
+  mergeAttributes(attributes: GraphAttributes): this;
 
   // Node attribute methods
   getNodeAttribute(node: NodeKey, name: string): any;
-  getNodeAttributes(node: NodeKey): Attributes;
+  getNodeAttributes(node: NodeKey): NodeAttributes;
   hasNodeAttribute(node: NodeKey, name: string): boolean;
   setNodeAttribute(node: NodeKey, name: string, value: any): this;
   updateNodeAttribute(node: NodeKey, name: string, updater: (value: any) => any): this;
   removeNodeAttribute(node: NodeKey, name: string): this;
-  replaceNodeAttributes(node: NodeKey, attributes: Attributes): this;
-  mergeNodeAttributes(node: NodeKey, attributes: Attributes): this;
+  replaceNodeAttributes(node: NodeKey, attributes: NodeAttributes): this;
+  mergeNodeAttributes(node: NodeKey, attributes: NodeAttributes): this;
 
   // Edge attribute methods
   getEdgeAttribute(edge: EdgeKey, name: string): any;
-  getEdgeAttributes(edge: EdgeKey): Attributes;
+  getEdgeAttributes(edge: EdgeKey): EdgeAttributes;
   hasEdgeAttribute(edge: EdgeKey, name: string): boolean;
   setEdgeAttribute(edge: EdgeKey, name: string, value: any): this;
   updateEdgeAttribute(edge: EdgeKey, name: string, updater: (value: any) => any): this;
   removeEdgeAttribute(edge: EdgeKey, name: string): this;
-  replaceEdgeAttributes(edge: EdgeKey, attributes: Attributes): this;
-  mergeEdgeAttributes(edge: EdgeKey, attributes: Attributes): this;
+  replaceEdgeAttributes(edge: EdgeKey, attributes: EdgeAttributes): this;
+  mergeEdgeAttributes(edge: EdgeKey, attributes: EdgeAttributes): this;
 
   getEdgeAttribute(source: NodeKey, target: NodeKey, name: string): any;
-  getEdgeAttributes(source: NodeKey, target: NodeKey): Attributes;
+  getEdgeAttributes(source: NodeKey, target: NodeKey): EdgeAttributes;
   hasEdgeAttribute(source: NodeKey, target: NodeKey, name: string): boolean;
   setEdgeAttribute(source: NodeKey, target: NodeKey, name: string, value: any): this;
   updateEdgeAttribute(source: NodeKey, target: NodeKey, name: string, updater: (value: any) => any): this;
   removeEdgeAttribute(source: NodeKey, target: NodeKey, name: string): this;
-  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: Attributes): this;
-  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: Attributes): this;
+  replaceEdgeAttributes(source: NodeKey, target: NodeKey, attributes: EdgeAttributes): this;
+  mergeEdgeAttributes(source: NodeKey, target: NodeKey, attributes: EdgeAttributes): this;
 
   // Iteration methods
-  [Symbol.iterator](): IterableIterator<AdjacencyEntry>;
-  forEach(callback: AdjacencyCallback): void;
-  adjacency(): IterableIterator<AdjacencyEntry>;
+  [Symbol.iterator](): IterableIterator<AdjacencyEntry<NodeAttributes, EdgeAttributes>>;
+  forEach(callback: AdjacencyCallback<NodeAttributes, EdgeAttributes>): void;
+  adjacency(): IterableIterator<AdjacencyEntry<NodeAttributes, EdgeAttributes>>;
 
   nodes(): Array<string>;
-  forEachNode(callback: NodeIterationCallback): void;
-  nodeEntries(): IterableIterator<NodeEntry>;
+  forEachNode(callback: NodeIterationCallback<NodeAttributes>): void;
+  nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
   edges(node: NodeKey): Array<string>;
@@ -245,48 +245,48 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   outboundEdges(): Array<string>;
   outboundEdges(node: NodeKey): Array<string>;
   outboundEdges(source: NodeKey, target: NodeKey): Array<string>;
-  forEachEdge(callback: EdgeIterationCallback): void;
-  forEachEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  forEachUndirectedEdge(callback: EdgeIterationCallback): void;
-  forEachUndirectedEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachUndirectedEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  forEachDirectedEdge(callback: EdgeIterationCallback): void;
-  forEachDirectedEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachDirectedEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  forEachInEdge(callback: EdgeIterationCallback): void;
-  forEachInEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachInEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  forEachOutEdge(callback: EdgeIterationCallback): void;
-  forEachOutEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachOutEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  forEachInboundEdge(callback: EdgeIterationCallback): void;
-  forEachInboundEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachInboundEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  forEachOutboundEdge(callback: EdgeIterationCallback): void;
-  forEachOutboundEdge(node: NodeKey, callback: EdgeIterationCallback): void;
-  forEachOutboundEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback): void;
-  edgeEntries(): IterableIterator<EdgeEntry>;
-  edgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  edgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
-  undirectedEdgeEntries(): IterableIterator<EdgeEntry>;
-  undirectedEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  undirectedEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
-  directedEdgeEntries(): IterableIterator<EdgeEntry>;
-  directedEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  directedEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
-  inEdgeEntries(): IterableIterator<EdgeEntry>;
-  inEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  inEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
-  outEdgeEntries(): IterableIterator<EdgeEntry>;
-  outEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  outEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
-  inboundEdgeEntries(): IterableIterator<EdgeEntry>;
-  inboundEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  inboundEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
-  outboundEdgeEntries(): IterableIterator<EdgeEntry>;
-  outboundEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry>;
-  outboundEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry>;
+  forEachEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachUndirectedEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachUndirectedEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachUndirectedEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachDirectedEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachDirectedEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachDirectedEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachInEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachInEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachInEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachOutEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachOutEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachOutEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachInboundEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachInboundEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachInboundEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachOutboundEdge(callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachOutboundEdge(node: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  forEachOutboundEdge(source: NodeKey, target: NodeKey, callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>): void;
+  edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  edgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  edgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  undirectedEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  undirectedEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  undirectedEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  directedEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  directedEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  directedEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  inEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  inEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  inEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  outEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  outEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  outEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  inboundEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  inboundEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  inboundEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  outboundEdgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  outboundEdgeEntries(node: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
+  outboundEdgeEntries(source: NodeKey, target: NodeKey): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
 
   neighbors(node: NodeKey): Array<string>;
   undirectedNeighbors(node: NodeKey): Array<string>;
@@ -295,29 +295,29 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   outNeighbors(node: NodeKey): Array<string>;
   inboundNeighbors(node: NodeKey): Array<string>;
   outboundNeighbors(node: NodeKey): Array<string>;
-  forEachNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  forEachUndirectedNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  forEachDirectedNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  forEachInNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  forEachOutNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  forEachInboundNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  forEachOutboundNeighbor(node: NodeKey, callback: NodeIterationCallback): void;
-  neighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
-  undirectedNeighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
-  directedNeighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
-  inNeighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
-  outNeighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
-  inboundNeighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
-  outboundNeighborEntries(node: NodeKey): IterableIterator<NodeEntry>;
+  forEachNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachUndirectedNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachDirectedNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachInNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachOutNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachInboundNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachOutboundNeighbor(node: NodeKey, callback: NodeIterationCallback<NodeAttributes>): void;
+  neighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  undirectedNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  directedNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  inNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  outNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  inboundNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
+  outboundNeighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
 
   // Serialization methods
-  exportNode(node: NodeKey): SerializedNode;
-  exportEdge(edge: EdgeKey): SerializedEdge;
-  export(): SerializedGraph;
-  importNode(data: SerializedNode, merge?: boolean): this;
-  importEdge(data: SerializedEdge, merge?: boolean): this;
-  import(data: SerializedGraph, merge?: boolean): this;
-  import(graph: AbstractGraph, merge?: boolean): this;
+  exportNode(node: NodeKey): SerializedNode<NodeAttributes>;
+  exportEdge(edge: EdgeKey): SerializedEdge<EdgeAttributes>;
+  export(): SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+  importNode(data: SerializedNode<NodeAttributes>, merge?: boolean): this;
+  importEdge(data: SerializedEdge<EdgeAttributes>, merge?: boolean): this;
+  import(data: SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>, merge?: boolean): this;
+  import(graph: AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>, merge?: boolean): this;
 
   // Utils
   nullCopy(): this;
@@ -327,19 +327,19 @@ declare abstract class AbstractGraph extends EventEmitter implements Iterable<Ad
   upgradeToMulti(): this;
 
   // Well-known methods
-  toJSON(): SerializedGraph;
+  toJSON(): SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
   toString(): string;
   inspect(): any;
 
-  static from(data: SerializedGraph): AbstractGraph;
-  static from(graph: AbstractGraph): AbstractGraph;
+  static from<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes>(data: SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+  static from<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes>(graph: AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 }
 
-interface IGraphConstructor {
-  new(options?: GraphOptions): AbstractGraph;
+interface IGraphConstructor<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> {
+  new(options?: GraphOptions<GraphAttributes>): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
 }
 
-type GraphConstructor = IGraphConstructor;
+type GraphConstructor<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> = IGraphConstructor<NodeAttributes, EdgeAttributes, GraphAttributes>;
 
 export {
   AbstractGraph,
