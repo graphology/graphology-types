@@ -3,9 +3,6 @@
   "version": "0.16.0",
   "description": "TypeScript declaration for graphology.",
   "main": "index.d.ts",
-  "scripts": {
-    "test": "echo TODO"
-  },
   "files": [
     "index.d.ts"
   ],
