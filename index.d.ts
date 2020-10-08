@@ -50,7 +50,7 @@ type EdgeKeyGeneratorFunction<EdgeAttributes extends Attributes = Attributes> = 
 ) => EdgeKey;
 
 type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
-  allowSelfLoops?: boolean
+  allowSelfLoops?: boolean,
   edgeKeyGenerator?: EdgeKeyGeneratorFunction<EdgeAttributes>,
   multi?: boolean,
   type?: GraphType
@@ -104,8 +104,15 @@ type SerializedEdge<EdgeAttributes extends Attributes = Attributes> = {
   undirected?: boolean
 };
 
+type SerializedGraphOptions = {
+  allowSelfLoops?: boolean,
+  multi?: boolean,
+  type?: GraphType
+};
+
 type SerializedGraph<NodeAttributes extends Attributes = Attributes, EdgeAttributes extends Attributes = Attributes, GraphAttributes extends Attributes = Attributes> = {
   attributes?: GraphAttributes,
+  options?: SerializedGraphOptions,
   nodes: Array<SerializedNode<NodeAttributes>>,
   edges: Array<SerializedEdge<EdgeAttributes>>
 };
@@ -126,6 +133,10 @@ declare abstract class AbstractGraph<NodeAttributes extends Attributes = Attribu
   type: GraphType;
   multi: boolean;
   allowSelfLoops: boolean;
+  implementation: string;
+  selfLoopCount: number;
+  directedSelfLoopCount: number;
+  undirectedSelfLoopCount: number;
 
   // Read methods
   hasNode(node: NodeKey): boolean;
@@ -144,9 +155,11 @@ declare abstract class AbstractGraph<NodeAttributes extends Attributes = Attribu
   target(edge: EdgeKey): string;
   extremities(edge: EdgeKey): [string, string];
   opposite(node: NodeKey, edge: EdgeKey): string;
-  undirected(edge: EdgeKey): boolean;
-  directed(edge: EdgeKey): boolean;
-  selfLoop(edge: EdgeKey): boolean;
+  isUndirected(edge: EdgeKey): boolean;
+  isDirected(edge: EdgeKey): boolean;
+  isSelfLoop(edge: EdgeKey): boolean;
+  hasExtremity(edge: EdgeKey, node: NodeKey): boolean;
+  hasGeneratedKey(edge: EdgeKey): boolean;
   neighbors(source: NodeKey, target: NodeKey): boolean;
   undirectedNeighbors(source: NodeKey, target: NodeKey): boolean;
   directedNeighbors(source: NodeKey, target: NodeKey): boolean;
