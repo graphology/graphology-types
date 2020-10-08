@@ -6,6 +6,9 @@
   "files": [
     "index.d.ts"
   ],
+  "scripts": {
+    "prettier": "prettier --write '*.d.ts'"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/graphology/graphology-types.git"
@@ -27,5 +30,10 @@
     "url": "https://github.com/graphology/graphology-types/issues"
   },
   "homepage": "https://github.com/graphology/graphology-types#readme",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "@yomguithereal/prettier-config": "^1.1.0",
+    "prettier": "^2.1.2"
+  },
+  "prettier": "@yomguithereal/prettier-config"
 }
