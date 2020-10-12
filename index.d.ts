@@ -38,7 +38,7 @@ declare class EventEmitter {
 type Attributes = {[key: string]: any};
 
 type NodeKey = string | number;
-type EdgeKey = NodeKey;
+type EdgeKey = string | number;
 
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
