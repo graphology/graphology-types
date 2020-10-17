@@ -577,9 +577,9 @@ declare abstract class AbstractGraph<
   ): this;
 
   // Utils
-  nullCopy(): this;
-  emptyCopy(): this;
-  copy(): this;
+  nullCopy(): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+  emptyCopy(): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
+  copy(): AbstractGraph<NodeAttributes, EdgeAttributes, GraphAttributes>;
   upgradeToMixed(): this;
   upgradeToMulti(): this;
 
