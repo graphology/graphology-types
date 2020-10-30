@@ -72,7 +72,7 @@ type EdgeEntry<
   EdgeAttributes extends Attributes = Attributes
 > = [string, EdgeAttributes, string, string, NodeAttributes, NodeAttributes];
 
-type AdjacencyCallback<
+type AdjacencyIterationCallback<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -81,13 +81,33 @@ type AdjacencyCallback<
   sourceAttributes: NodeAttributes,
   targetAttributes: NodeAttributes,
   edge: string,
-  edgeAttributes: EdgeAttributes
+  edgeAttributes: EdgeAttributes,
+  undirected: boolean,
+  generatedKey: boolean
 ) => void;
+
+type AdjacencyUntilIterationCallback<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = (
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  edge: string,
+  edgeAttributes: EdgeAttributes,
+  undirected: boolean,
+  generatedKey: boolean
+) => boolean | undefined;
 
 type NodeIterationCallback<NodeAttributes extends Attributes = Attributes> = (
   node: string,
   attributes: NodeAttributes
 ) => void;
+
+type NodeUntilIterationCallback<
+  NodeAttributes extends Attributes = Attributes
+> = (node: string, attributes: NodeAttributes) => boolean | undefined;
 
 type EdgeIterationCallback<
   NodeAttributes extends Attributes = Attributes,
@@ -98,8 +118,24 @@ type EdgeIterationCallback<
   source: string,
   target: string,
   sourceAttributes: NodeAttributes,
-  targetAttributes: NodeAttributes
+  targetAttributes: NodeAttributes,
+  undirected: boolean,
+  generatedKey: boolean
 ) => void;
+
+type EdgeUntilIterationCallback<
+  NodeAttributes extends Attributes = Attributes,
+  EdgeAttributes extends Attributes = Attributes
+> = (
+  edge: string,
+  attributes: EdgeAttributes,
+  source: string,
+  target: string,
+  sourceAttributes: NodeAttributes,
+  targetAttributes: NodeAttributes,
+  undirected: boolean,
+  generatedKey: boolean
+) => boolean | undefined;
 
 type SerializedNode<NodeAttributes extends Attributes = Attributes> = {
   key: string;
@@ -331,11 +367,17 @@ declare abstract class AbstractGraph<
   [Symbol.iterator](): IterableIterator<
     AdjacencyEntry<NodeAttributes, EdgeAttributes>
   >;
-  forEach(callback: AdjacencyCallback<NodeAttributes, EdgeAttributes>): void;
+  forEach(
+    callback: AdjacencyIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachUntil(
+    callback: AdjacencyUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
   adjacency(): IterableIterator<AdjacencyEntry<NodeAttributes, EdgeAttributes>>;
 
   nodes(): Array<string>;
   forEachNode(callback: NodeIterationCallback<NodeAttributes>): void;
+  forEachNodeUntil(callback: NodeUntilIterationCallback<NodeAttributes>): void;
   nodeEntries(): IterableIterator<NodeEntry<NodeAttributes>>;
 
   edges(): Array<string>;
@@ -443,6 +485,90 @@ declare abstract class AbstractGraph<
     target: NodeKey,
     callback: EdgeIterationCallback<NodeAttributes, EdgeAttributes>
   ): void;
+  forEachEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachUndirectedEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachUndirectedEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachUndirectedEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachDirectedEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachDirectedEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachDirectedEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachInEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachInEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachInEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachOutEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachOutEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachOutEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachInboundEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachInboundEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachInboundEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachOutboundEdgeUntil(
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachOutboundEdgeUntil(
+    node: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
+  forEachOutboundEdgeUntil(
+    source: NodeKey,
+    target: NodeKey,
+    callback: EdgeUntilIterationCallback<NodeAttributes, EdgeAttributes>
+  ): void;
   edgeEntries(): IterableIterator<EdgeEntry<NodeAttributes, EdgeAttributes>>;
   edgeEntries(
     node: NodeKey
@@ -543,6 +669,34 @@ declare abstract class AbstractGraph<
     node: NodeKey,
     callback: NodeIterationCallback<NodeAttributes>
   ): void;
+  forEachNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
+  forEachUndirectedNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
+  forEachDirectedNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
+  forEachInNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
+  forEachOutNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
+  forEachInboundNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
+  forEachOutboundNeighborUntil(
+    node: NodeKey,
+    callback: NodeUntilIterationCallback<NodeAttributes>
+  ): void;
   neighborEntries(node: NodeKey): IterableIterator<NodeEntry<NodeAttributes>>;
   undirectedNeighborEntries(
     node: NodeKey
@@ -633,9 +787,12 @@ export {
   AdjacencyEntry,
   NodeEntry,
   EdgeEntry,
-  AdjacencyCallback,
+  AdjacencyIterationCallback,
+  AdjacencyUntilIterationCallback,
   NodeIterationCallback,
+  NodeUntilIterationCallback,
   EdgeIterationCallback,
+  EdgeUntilIterationCallback,
   SerializedNode,
   SerializedEdge,
   SerializedGraph,
