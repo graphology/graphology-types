@@ -42,6 +42,8 @@ type EdgeKey = string | number;
 
 type GraphType = 'mixed' | 'directed' | 'undirected';
 
+type UpdateHints = {attributes?: Array<string>};
+
 type EdgeKeyGeneratorFunction<
   EdgeAttributes extends Attributes = Attributes
 > = (
@@ -109,6 +111,10 @@ type NodeUntilIterationCallback<
   NodeAttributes extends Attributes = Attributes
 > = (node: string, attributes: NodeAttributes) => boolean | undefined;
 
+type NodeUpdateIterationCallback<
+  NodeAttributes extends Attributes = Attributes
+> = (node: string, attributes: NodeAttributes) => NodeAttributes;
+
 type EdgeIterationCallback<
   NodeAttributes extends Attributes = Attributes,
   EdgeAttributes extends Attributes = Attributes
@@ -136,6 +142,10 @@ type EdgeUntilIterationCallback<
   undirected: boolean,
   generatedKey: boolean
 ) => boolean | undefined;
+
+type EdgeUpdateIterationCallback<
+  EdgeAttributes extends Attributes = Attributes
+> = (edge: string, attributes: EdgeAttributes) => EdgeAttributes;
 
 type SerializedNode<NodeAttributes extends Attributes = Attributes> = {
   key: string;
@@ -355,6 +365,10 @@ declare abstract class AbstractGraph<
   removeNodeAttribute(node: NodeKey, name: string): this;
   replaceNodeAttributes(node: NodeKey, attributes: NodeAttributes): this;
   mergeNodeAttributes(node: NodeKey, attributes: NodeAttributes): this;
+  updateEachNodeAttributes(
+    updater: NodeUpdateIterationCallback<NodeAttributes>,
+    hints?: UpdateHints
+  ): void;
 
   // Edge attribute methods
   getEdgeAttribute(edge: EdgeKey, name: string): any;
@@ -369,6 +383,10 @@ declare abstract class AbstractGraph<
   removeEdgeAttribute(edge: EdgeKey, name: string): this;
   replaceEdgeAttributes(edge: EdgeKey, attributes: EdgeAttributes): this;
   mergeEdgeAttributes(edge: EdgeKey, attributes: EdgeAttributes): this;
+  updateEachEdgeAttributes(
+    updater: EdgeUpdateIterationCallback<EdgeAttributes>,
+    hints?: UpdateHints
+  ): void;
 
   getEdgeAttribute(source: NodeKey, target: NodeKey, name: string): any;
   getEdgeAttributes(source: NodeKey, target: NodeKey): EdgeAttributes;
@@ -825,8 +843,10 @@ export {
   AdjacencyUntilIterationCallback,
   NodeIterationCallback,
   NodeUntilIterationCallback,
+  NodeUpdateIterationCallback,
   EdgeIterationCallback,
   EdgeUntilIterationCallback,
+  EdgeUpdateIterationCallback,
   SerializedNode,
   SerializedEdge,
   SerializedGraph,
