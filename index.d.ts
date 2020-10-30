@@ -226,6 +226,10 @@ declare abstract class AbstractGraph<
   // Mutation methods
   addNode(node: NodeKey, attributes?: NodeAttributes): string;
   mergeNode(node: NodeKey, attributes?: NodeAttributes): string;
+  updateNode(
+    node: NodeKey,
+    updater?: (attributes: NodeAttributes) => NodeAttributes
+  ): string;
   addEdge(
     source: NodeKey,
     target: NodeKey,
@@ -235,6 +239,11 @@ declare abstract class AbstractGraph<
     source: NodeKey,
     target: NodeKey,
     attributes?: EdgeAttributes
+  ): string;
+  updateEdge(
+    source: NodeKey,
+    target: NodeKey,
+    updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addDirectedEdge(
     source: NodeKey,
@@ -246,6 +255,11 @@ declare abstract class AbstractGraph<
     target: NodeKey,
     attributes?: EdgeAttributes
   ): string;
+  updateDirectedEdge(
+    source: NodeKey,
+    target: NodeKey,
+    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+  ): string;
   addUndirectedEdge(
     source: NodeKey,
     target: NodeKey,
@@ -255,6 +269,11 @@ declare abstract class AbstractGraph<
     source: NodeKey,
     target: NodeKey,
     attributes?: EdgeAttributes
+  ): string;
+  updateUndirectedEdge(
+    source: NodeKey,
+    target: NodeKey,
+    updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   addEdgeWithKey(
     edge: EdgeKey,
@@ -268,6 +287,11 @@ declare abstract class AbstractGraph<
     target: NodeKey,
     attributes?: EdgeAttributes
   ): string;
+  updateEdgeWithKey(
+    source: NodeKey,
+    target: NodeKey,
+    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+  ): string;
   addDirectedEdgeWithKey(
     edge: EdgeKey,
     source: NodeKey,
@@ -280,6 +304,11 @@ declare abstract class AbstractGraph<
     target: NodeKey,
     attributes?: EdgeAttributes
   ): string;
+  updateDirectedEdgeWithKey(
+    source: NodeKey,
+    target: NodeKey,
+    updater?: (attributes: EdgeAttributes) => EdgeAttributes
+  ): string;
   addUndirectedEdgeWithKey(
     edge: EdgeKey,
     source: NodeKey,
@@ -291,6 +320,11 @@ declare abstract class AbstractGraph<
     source: NodeKey,
     target: NodeKey,
     attributes?: EdgeAttributes
+  ): string;
+  updateUndirectedEdgeWithKey(
+    source: NodeKey,
+    target: NodeKey,
+    updater?: (attributes: EdgeAttributes) => EdgeAttributes
   ): string;
   dropNode(node: NodeKey): void;
   dropEdge(edge: EdgeKey): void;
