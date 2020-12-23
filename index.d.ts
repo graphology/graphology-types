@@ -322,7 +322,13 @@ declare class EventEmitter<
     >[Event]
   ): this;
   off(type: string | number, listener: Listener): this;
-  removeAllListeners(type?: Event): this;
+  removeAllListeners<
+    Event extends keyof GraphEvents<
+      NodeAttributes,
+      EdgeAttributes,
+      GraphAttributes
+    >
+  >(type?: Event): this;
   removeAllListeners(type?: string | number): this;
   listeners(type: string | number): Listener[];
   listenerCount(type: string | number): number;
