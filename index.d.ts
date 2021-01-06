@@ -19,12 +19,12 @@ type UpdateHints = {attributes?: Array<string>};
 
 type EdgeKeyGeneratorFunction<
   EdgeAttributes extends Attributes = Attributes
-> = (
-  undirected: boolean,
-  source: string,
-  target: string,
-  attributes: EdgeAttributes
-) => EdgeKey;
+> = (data: {
+  undirected: boolean;
+  source: string;
+  target: string;
+  attributes: EdgeAttributes;
+}) => EdgeKey;
 
 type GraphOptions<EdgeAttributes extends Attributes = Attributes> = {
   allowSelfLoops?: boolean;
